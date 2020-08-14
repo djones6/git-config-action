@@ -1,0 +1,23 @@
+name: 'Configure git cli credentials'
+description: 'Configure the git global config with credentials for github.com'
+inputs:
+  user-email:
+    description: 'E-mail to use for git commit'
+    required: true
+  user-name:
+    description: 'Name to use for git commit'
+    required: true
+    default: 'GitOps Update'
+  gitops-token:
+    description: 'Access token to use'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        git config --global user.email "${{ inputs.user-email }}"
+        git config --global user.name "${{ inputs.user-name }}"
+        git config --global credential.https://github.com.username "None"
+        git config --global credential.helper "!f() { echo \"password=${{ inputs.gitops-token }}\"; }; f"
+
+      shell: bash
